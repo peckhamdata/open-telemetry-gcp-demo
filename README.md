@@ -2,6 +2,10 @@
 
 "Ridicule is nothing to be scared of" - Adam Ant 'Prince Charming'
 
+This is a demonstration of using [Open Telemetry](https://opentelemetry.io/)
+to instrument a [Google Cloud Functions](https://cloud.google.com/functions)
+app.
+
 # Why?
 
 One of the hardest things I find about starting on a new project, in a new domain
@@ -13,7 +17,7 @@ Whenever I start on something I like to use John Boyd's OODA loop as a mantra
 
 Observe
 Orientate
-Decide
+Decide../services/api/app/utils/frameio/aqc_comments.py
 Act
 
 Dan North has a similar one I find useful
@@ -43,10 +47,8 @@ Which brings us to
 
 Jaeger and Open Telemetry
 
-So i w
-
 This all got a bit meta as I discovered that Open Telemetry was very much
-an emerging technology
+an emerging technology.
 
 One of the problems with getting started with a new project and a
 new technology is your questions are inevitably naive.  This can end up 
@@ -54,7 +56,14 @@ soliciting derision from the people you ask and in turn make
 you reluctant to ask questions.
 
 We often talk about 'Safe to Fail' envionments.
-Emily Webber takes this a step further and talks about them being 'Safe to Learn' 
+Emily Webber takes this a step further and talks about them being 'Safe to Learn'
+
+# So why Prince Charming?
+
+As Adam Ant put it 'ridicule is nothing to be scared of' If people mock you
+for your lack of knowledge rather than help you learn that is not your loss.
+
+Don't let it stop you from learning.
 
 ## Kismit.
 
