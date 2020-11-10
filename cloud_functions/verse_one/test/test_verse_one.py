@@ -1,10 +1,14 @@
 import json
+from os import environ
 from mock import patch, MagicMock
 from pytest import fixture
 import main
 
 @fixture
 def event():
+
+    environ["COLLECTOR_ENDPOINT"] = "jaeger"
+
     event = {
         '@type': 'type.googleapis.com/google.pubsub.v1.PubsubMessage',
         'attributes': None,

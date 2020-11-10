@@ -1,0 +1,68 @@
+#cloud-config
+
+package_update: true
+package_upgrade: true
+package_reboot_if_required: true
+
+users:
+  - name: jaeger
+    uid: 2002
+
+write_files:
+  - path: /etc/systemd/system/jaeger.service
+    permissions: 0644
+    owner: root
+    content: |
+      [Unit]
+      Description=Start Jaeger All In One
+
+      [Service]
+      Environment="HOME=/home/jaeger"
+      ExecStart=/usr/bin/docker run \
+      --name jaeger \
+        --network=host \
+        --rm \
+        -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 \
+        -p 5775:5775/udp \
+        -p 6831:6831/udp \
+        -p 6832:6832/udp \
+        -p 5778:5778 \
+        -p 16686:16686 \
+        -p 14268:14268 \
+        -p 14250:14250 \
+        -p 9411:9411 \
+        ${image}
+      ExecStop=/usr/bin/docker stop jaeger
+      ExecStopPost=/usr/bin/docker rm jaeger
+
+packages:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - gnupg-agent
+  - software-properties-common
+
+runcmd:
+  - /sbin/iptables -A INPUT -p udp --dport 5775 -j ACCEPT
+  - /sbin/iptables -A INPUT -p udp --dport 6831 -j ACCEPT
+  - /sbin/iptables -A INPUT -p udp --dport 6832 -j ACCEPT
+  - /sbin/iptables -A INPUT -p tcp --dport 5778 -j ACCEPT
+  - /sbin/iptables -A INPUT -p tcp --dport 16686 -j ACCEPT
+  - /sbin/iptables -A INPUT -p tcp --dport 14268 -j ACCEPT
+  - /sbin/iptables -A INPUT -p tcp --dport 14250 -j ACCEPT
+  - /sbin/iptables -A INPUT -p tcp --dport 9411 -j ACCEPT
+  - /sbin/iptables -A INPUT -p tcp --dport 80   -j ACCEPT
+  - /sbin/iptables -A INPUT -p tcp --dport 443  -j ACCEPT
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+  - add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - apt-get update -y
+  - apt-get install -y docker-ce docker-ce-cli containerd.io
+  - systemctl start docker
+  - systemctl enable docker
+  - fsck.ext4 -tvy /dev/sdb1
+  - mkdir /mnt/jaeger
+  - mount -t ext4 /dev/sdb1 /mnt/jaeger
+  - chmod -R a+rwx /mnt/jaeger
+  - systemctl daemon-reload
+  - systemctl start jaeger.service
+  - systemctl enable jaeger.service
