@@ -71,3 +71,7 @@ Lisa Crispin on the Open Telemetry Glitter
 When I searched for Emily Webber "Safe to Learn" I got a Lisa Crispin blog entry
 
 "You know that's not how you're supposed to do that"
+
+## Running the tests
+
+`pytest`
