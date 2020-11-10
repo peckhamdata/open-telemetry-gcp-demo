@@ -8,4 +8,4 @@ logger.addHandler(logging.StreamHandler(sys.stdout))
 
 
 def entry_point(event, context):
-    pass
+    logger.info("Don't you ever, don't you ever")
