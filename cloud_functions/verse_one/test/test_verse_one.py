@@ -1,7 +1,6 @@
 import json
 from mock import patch, MagicMock
 from pytest import fixture
-from os import environ
 import main
 
 @fixture
@@ -20,6 +19,9 @@ def context():
     context.event_type = 'gcs-event'
     return context
 
-def test_get_data_from_pubsub(event, context):
+@patch('main.logger')
+def test_get_data_from_pubsub(mock_logger, event, context):
 
     main.entry_point(event, context)
+
+    assert mock_logger.mock_calls[-1][0] == 'info'
