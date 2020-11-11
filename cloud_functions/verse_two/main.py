@@ -14,7 +14,7 @@ logger.addHandler(logging.StreamHandler(sys.stdout))
 collector_endpoint = environ['COLLECTOR_ENDPOINT']
 
 bm = BariumMeal(jaeger_config={'collector_endpoint': collector_endpoint,
-                               'service_name': 'verse one'},
+                               'service_name': 'verse two'},
                 requests=True)
 
 tracer = bm.get_tracer()
@@ -31,7 +31,7 @@ def entry_point(event, context):
     event_data = ast.literal_eval(base64.b64decode(event['data']).decode('utf-8'))
     bm.get_context_from_event_data(event_data)
 
-    with tracer.start_as_current_span(name="verse_one") as span:
+    with tracer.start_as_current_span(name="verse_two") as span:
 
         lyric = "Don't you ever, don't you ever"
         logger.info(lyric)
