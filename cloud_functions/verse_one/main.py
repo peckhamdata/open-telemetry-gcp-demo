@@ -31,8 +31,9 @@ def entry_point(event, context):
     with tracer.start_as_current_span(name="sing_verse_one") as span:
 
         lyric = "Don't you ever, don't you ever"
-        logger.info(lyric)
-        span.add_event(lyric)
+        with tracer.start_as_current_span(name=lyric)
+            logger.info(lyric)
+            span.add_event(lyric)
 
         with tracer.start_as_current_span(name="sing_chorus") as span:
 
