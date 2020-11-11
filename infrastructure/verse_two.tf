@@ -57,6 +57,7 @@ resource "google_cloudfunctions_function" "verse_two" {
     LOCATION = local.location
     GCP_PROJECT_ID = local.project_id
     GCP_PUBSUB_VERSE_TWO = local.GCP_PUBSUB_VERSE_TWO
+    GCP_PUBSUB_VERSE_THREE = local.GCP_PUBSUB_VERSE_THREE
   }
 
   source_repository  {

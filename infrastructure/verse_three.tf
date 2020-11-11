@@ -1,17 +1,17 @@
-resource "google_pubsub_topic" "verse_two" {
-  name = local.GCP_PUBSUB_VERSE_TWO
+resource "google_pubsub_topic" "verse_three" {
+  name = local.GCP_PUBSUB_VERSE_THREE
 
   labels = {
-    role = local.GCP_PUBSUB_VERSE_TWO
+    role = local.GCP_PUBSUB_VERSE_THREE
   }
 }
 
-resource "google_pubsub_subscription" "verse_two" {
-  name  = local.GCP_PUBSUB_VERSE_TWO
-  topic = google_pubsub_topic.verse_two.name
+resource "google_pubsub_subscription" "verse_three" {
+  name  = local.GCP_PUBSUB_VERSE_THREE
+  topic = google_pubsub_topic.verse_three.name
 
   labels = {
-    role = local.GCP_PUBSUB_VERSE_TWO
+    role = local.GCP_PUBSUB_VERSE_THREE
   }
 
   message_retention_duration = "604800s"
@@ -21,20 +21,20 @@ resource "google_pubsub_subscription" "verse_two" {
 
 }
 
-resource "google_pubsub_topic_iam_member" "verse_two" {
-  topic = google_pubsub_topic.verse_two.name
+resource "google_pubsub_topic_iam_member" "verse_three" {
+  topic = google_pubsub_topic.verse_three.name
   role = "roles/owner"
   member = "serviceAccount:${google_service_account.prince_charming.email}"
 }
 
-resource "google_pubsub_subscription_iam_member" "verse_two" {
-  subscription = google_pubsub_subscription.verse_two.name
+resource "google_pubsub_subscription_iam_member" "verse_three" {
+  subscription = google_pubsub_subscription.verse_three.name
   role         = "roles/owner"
   member       = "serviceAccount:${google_service_account.prince_charming.email}"
 }
 
-resource "google_cloudfunctions_function" "verse_two" {
-  name = "verse_two"
+resource "google_cloudfunctions_function" "verse_three" {
+  name = "verse_three"
   timeout = 500
   service_account_email = google_service_account.prince_charming.email
   ingress_settings = "ALLOW_ALL"
@@ -45,7 +45,7 @@ resource "google_cloudfunctions_function" "verse_two" {
   vpc_connector = google_vpc_access_connector.connector.id
   event_trigger {
     event_type = "google.pubsub.topic.publish"
-    resource = google_pubsub_topic.verse_two.name
+    resource = google_pubsub_topic.verse_three.name
     failure_policy {
       retry = false
     }
@@ -56,11 +56,11 @@ resource "google_cloudfunctions_function" "verse_two" {
     CHORUS_FUNCTION = google_cloudfunctions_function.chorus.name
     LOCATION = local.location
     GCP_PROJECT_ID = local.project_id
-    GCP_PUBSUB_VERSE_TWO = local.GCP_PUBSUB_VERSE_TWO
+    GCP_PUBSUB_VERSE_THREE = local.GCP_PUBSUB_VERSE_THREE
   }
 
   source_repository  {
-    url = "https://source.developers.google.com/projects/${local.project_id}/repos/${google_sourcerepo_repository.default.name}/moveable-aliases/main/paths/cloud_functions/verse_two"
+    url = "https://source.developers.google.com/projects/${local.project_id}/repos/${google_sourcerepo_repository.default.name}/moveable-aliases/main/paths/cloud_functions/verse_three"
   }
 
 }
