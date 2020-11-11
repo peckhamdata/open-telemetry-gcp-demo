@@ -9,6 +9,15 @@ logger = logging.getLogger('verse_one')
 logger.setLevel(logging.DEBUG)
 logger.addHandler(logging.StreamHandler(sys.stdout))
 
+collector_endpoint = environ['COLLECTOR_ENDPOINT']
+
+bm = BariumMeal(jaeger_config={'collector_endpoint': collector_endpoint,
+                               'service_name': 'verse one'},
+                requests=True)
+
+tracer = bm.get_tracer()
+
+
 def get_auth_token(endpoint):
     metadata_server_url = 'http://metadata/computeMetadata/v1/instance/service-accounts/default/identity?audience='
     token_response = requests.get(f'{metadata_server_url}{endpoint}', headers={'Metadata-Flavor': 'Google'})
@@ -16,14 +25,6 @@ def get_auth_token(endpoint):
     return jwt
 
 def entry_point(event, context):
-
-    collector_endpoint = environ['COLLECTOR_ENDPOINT']
-
-    bm = BariumMeal(jaeger_config={'collector_endpoint': collector_endpoint,
-                                   'service_name': 'verse one'},
-                    requests=True)
-
-    tracer = bm.get_tracer()
 
     with tracer.start_as_current_span(name="verse_one") as span:
 

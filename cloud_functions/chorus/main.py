@@ -9,14 +9,15 @@ logger = logging.getLogger('chorus')
 logger.setLevel(logging.DEBUG)
 logger.addHandler(logging.StreamHandler(sys.stdout))
 
+collector_endpoint = environ['COLLECTOR_ENDPOINT']
+
+bm = BariumMeal(jaeger_config={'collector_endpoint': collector_endpoint,
+                               'service_name': 'chorus'})
+
+tracer = bm.get_tracer()
+
 def entry_point(request):
 
-    collector_endpoint = environ['COLLECTOR_ENDPOINT']
-
-    bm = BariumMeal(jaeger_config={'collector_endpoint': collector_endpoint,
-                                   'service_name': 'chorus'})
-
-    tracer = bm.get_tracer()
     if 'traceparent' in request.headers:
         bm.get_context_from_headers(request.headers)
 
