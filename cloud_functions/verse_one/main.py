@@ -12,8 +12,7 @@ logger.addHandler(logging.StreamHandler(sys.stdout))
 collector_endpoint = environ['COLLECTOR_ENDPOINT']
 
 bm = BariumMeal(jaeger_config={'collector_endpoint': collector_endpoint,
-                               'service_name': 'verse one'},
-                requests=True)
+                               'service_name': 'verse one'})
 
 tracer = bm.get_tracer()
 
