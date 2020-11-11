@@ -24,7 +24,7 @@ def context():
     return context
 
 @patch('main.logger')
-def test_get_data_from_pubsub(mock_logger, event, context):
+def test_verse_one(mock_logger, event, context):
 
     main.entry_point(event, context)
 
