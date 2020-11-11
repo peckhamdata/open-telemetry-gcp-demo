@@ -34,7 +34,9 @@ def entry_point(event, context):
         chorus_endpoint = f'https://{environ["LOCATION"]}-{environ["GCP_PROJECT_ID"]}.cloudfunctions.net/{environ["CHORUS_FUNCTION"]}'
         auth_token = get_auth_token(chorus_endpoint)
         function_headers = {'Authorization': f'bearer {auth_token}', 'content-type': 'application/json'}
+        trace_headers = bm.get_traceparent_header(span)
 
-        request = requests.get(chorus_endpoint, headers=function_headers)
+        request = requests.get(chorus_endpoint,
+                               headers={**function_headers, **trace_headers})
         if request.status_code != 200:
             logger.error(f'{chorus_endpoint} returned:{request.status_code}')

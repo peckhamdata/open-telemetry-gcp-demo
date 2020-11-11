@@ -17,6 +17,8 @@ def entry_point(request):
                                    'service_name': 'chorus'})
 
     tracer = bm.get_tracer()
+    if 'traceparent' in request.headers:
+        bm.get_context_from_headers(request.headers)
 
     with tracer.start_as_current_span(name="chorus") as span:
 
