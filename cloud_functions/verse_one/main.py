@@ -20,7 +20,8 @@ def entry_point(event, context):
     collector_endpoint = environ['COLLECTOR_ENDPOINT']
 
     bm = BariumMeal(jaeger_config={'collector_endpoint': collector_endpoint,
-                                   'service_name': 'verse one'})
+                                   'service_name': 'verse one'},
+                    requests=True)
 
     tracer = bm.get_tracer()
 
