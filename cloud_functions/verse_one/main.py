@@ -1,6 +1,7 @@
 import sys
 import logging
 import json
+import time
 from os import environ
 import requests
 from google.cloud import pubsub_v1
@@ -39,6 +40,7 @@ def entry_point(event, context):
             with tracer.start_as_current_span(name=lyric):
                 logger.info(lyric)
                 span.add_event(lyric)
+                time.sleep(1)
 
         with tracer.start_as_current_span(name="sing_chorus") as span:
 
