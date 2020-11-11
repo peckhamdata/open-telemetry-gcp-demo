@@ -17,7 +17,6 @@ def event():
     environ["CHORUS_FUNCTION"] = "chorus"
     environ["LOCATION"] = "here"
     environ["GCP_PROJECT_ID"] = "my_project"
-    environ["GCP_PUBSUB_VERSE_THREE"] = "verse_three"
 
     event = {
         '@type': 'type.googleapis.com/google.pubsub.v1.PubsubMessage',
@@ -37,19 +36,17 @@ def context():
     return context
 
 @patch('main.logger')
-def test_verse_one(mock_logger, mocker, requests_mock, event, context):
+def test_verse_one(mock_logger, requests_mock, event, context):
     requests_mock.get(metadata_endpoint)
     requests_mock.get(chorus_endpoint)
-    mocker.patch('google.cloud.pubsub_v1.PublisherClient')
     main.entry_point(event, context)
     assert len(requests_mock.request_history) == 2
     assert mock_logger.mock_calls[-1][0] == 'info'
 
 @patch('main.logger')
-def test_chorus_fail(mock_logger, mocker, requests_mock, event, context):
+def test_chorus_fail(mock_logger, requests_mock, event, context):
     requests_mock.get(metadata_endpoint)
     requests_mock.get(chorus_endpoint, status_code=500)
-    mocker.patch('google.cloud.pubsub_v1.PublisherClient')
     main.entry_point(event, context)
     assert len(requests_mock.request_history) == 2
     assert mock_logger.mock_calls[-1][0] == 'error'

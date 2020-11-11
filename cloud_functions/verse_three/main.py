@@ -2,13 +2,11 @@ import ast
 import base64
 import sys
 import logging
-import json
 from os import environ
-from google.cloud import pubsub_v1
 import requests
 from barium_meal import BariumMeal
 
-logger = logging.getLogger('verse_one')
+logger = logging.getLogger('verse_three')
 
 logger.setLevel(logging.DEBUG)
 logger.addHandler(logging.StreamHandler(sys.stdout))
@@ -33,7 +31,7 @@ def entry_point(event, context):
     event_data = ast.literal_eval(base64.b64decode(event['data']).decode('utf-8'))
     bm.get_context_from_event_data(event_data)
 
-    with tracer.start_as_current_span(name="verse_two") as span:
+    with tracer.start_as_current_span(name="verse_three") as span:
 
         lyric = "Don't you ever, don't you ever"
         logger.info(lyric)
@@ -48,12 +46,3 @@ def entry_point(event, context):
                                headers={**function_headers, **trace_headers})
         if request.status_code != 200:
             logger.error(f'{chorus_endpoint} returned:{request.status_code}')
-            return
-
-        publisher = pubsub_v1.PublisherClient()
-        topic_path = publisher.topic_path(environ['GCP_PROJECT_ID'],
-                                          environ['GCP_PUBSUB_VERSE_THREE'])
-        message = bm.add_trace({}, span)
-        message = json.dumps(message).encode("utf-8")
-        result = publisher.publish(topic_path, data=message)
-        logger.info(result)
