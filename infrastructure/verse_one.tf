@@ -58,6 +58,9 @@ resource "google_cloudfunctions_function" "verse_one" {
 
   environment_variables = {
     COLLECTOR_ENDPOINT = local.collector_endpoint
+    CHORUS_FUNCTION = google_cloudfunctions_function.chorus.name
+    LOCATION = local.location
+    GCP_PROJECT_ID = local.project_id
   }
 
   source_repository  {
