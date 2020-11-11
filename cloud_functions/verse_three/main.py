@@ -2,6 +2,7 @@ import ast
 import base64
 import sys
 import logging
+import time
 from os import environ
 import requests
 from barium_meal import BariumMeal
@@ -33,9 +34,17 @@ def entry_point(event, context):
 
     with tracer.start_as_current_span(name="verse_three") as span:
 
-        lyric = "Don't you ever, don't you ever"
-        logger.info(lyric)
-        span.add_event(lyric)
+        lyrics = ["Silk or leather or a feather",
+                  "Respect yourself and all of those around you",
+                  "Silk or leather or a feather",
+                  "Respect yourself and all of those around you"]
+
+        for lyric in lyrics:
+            with tracer.start_as_current_span(name=lyric):
+
+                logger.info(lyric)
+                span.add_event(lyric)
+                time.sleep(1)
 
         with tracer.start_as_current_span(name="sing_chorus") as span:
 

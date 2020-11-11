@@ -1,5 +1,6 @@
 import sys
 import logging
+import time
 from os import environ
 from flask import jsonify
 from barium_meal import BariumMeal
@@ -34,5 +35,6 @@ def entry_point(request):
 
                 logger.info(lyric)
                 span.add_event(lyric)
+                time.sleep(1)
 
     return jsonify({})
