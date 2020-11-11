@@ -1,6 +1,6 @@
 resource "google_service_account" "prince_charming" {
   account_id   = "prince-charming"
-  display_name = "Update Child Record"
+  display_name = "Prince Charming"
 }
 
 resource "google_pubsub_topic" "verse_one" {
