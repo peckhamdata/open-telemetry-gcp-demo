@@ -1,6 +1,13 @@
+import sys
+import logging
 from os import environ
 from flask import jsonify
 from barium_meal import BariumMeal
+
+logger = logging.getLogger('chorus')
+
+logger.setLevel(logging.DEBUG)
+logger.addHandler(logging.StreamHandler(sys.stdout))
 
 def entry_point(request):
 
