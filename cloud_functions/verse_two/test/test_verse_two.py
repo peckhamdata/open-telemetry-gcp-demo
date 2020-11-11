@@ -1,7 +1,11 @@
+import base64
 import json
 from os import environ
 from mock import patch, MagicMock
 from pytest import fixture
+
+environ["COLLECTOR_ENDPOINT"] = "http://jaeger"
+
 import main
 
 metadata_endpoint = 'http://metadata/computeMetadata/v1/instance/service-accounts/default/identity?audience=https://here-my_project.cloudfunctions.net/chorus'
@@ -10,7 +14,6 @@ chorus_endpoint = 'https://here-my_project.cloudfunctions.net/chorus'
 @fixture
 def event():
 
-    environ["COLLECTOR_ENDPOINT"] = "http://jaeger"
     environ["CHORUS_FUNCTION"] = "chorus"
     environ["LOCATION"] = "here"
     environ["GCP_PROJECT_ID"] = "my_project"
@@ -18,7 +21,10 @@ def event():
     event = {
         '@type': 'type.googleapis.com/google.pubsub.v1.PubsubMessage',
         'attributes': None,
-        'data': json.dumps({'action': 'start'})
+        'data': base64.b64encode(json.dumps({'trace': {'trace_id': 1,
+                                                       'span_id': 2,
+                                                       'trace_state': {},
+                                                       'trace_flags': 1}}).encode('utf-8'))
     }
     return event
 

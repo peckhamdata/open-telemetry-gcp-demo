@@ -1,3 +1,5 @@
+import ast
+import base64
 import sys
 import logging
 from os import environ
