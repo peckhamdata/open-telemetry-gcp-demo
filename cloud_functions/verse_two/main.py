@@ -1,9 +1,7 @@
 import sys
 import logging
-import json
 from os import environ
 import requests
-from google.cloud import pubsub_v1
 from barium_meal import BariumMeal
 
 logger = logging.getLogger('verse_one')
@@ -28,6 +26,9 @@ def get_auth_token(endpoint):
 
 def entry_point(event, context):
 
+    event_data = ast.literal_eval(base64.b64decode(event['data']).decode('utf-8'))
+    bm.get_context_from_event_data(event_data)
+
     with tracer.start_as_current_span(name="verse_one") as span:
 
         lyric = "Don't you ever, don't you ever"
@@ -43,11 +44,3 @@ def entry_point(event, context):
                                headers={**function_headers, **trace_headers})
         if request.status_code != 200:
             logger.error(f'{chorus_endpoint} returned:{request.status_code}')
-            return
-
-        publisher = pubsub_v1.PublisherClient()
-        topic_path = publisher.topic_path(environ['GCP_PROJECT_ID'],
-                                          environ['GCP_PUBSUB_VERSE_TWO'])
-        message = bm.add_trace({}, span)
-        message = json.dumps(message).encode("utf-8")
-        publisher.publish(topic_path, data=message)

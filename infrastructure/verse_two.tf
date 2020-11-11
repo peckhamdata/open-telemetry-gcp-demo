@@ -1,22 +1,17 @@
-resource "google_service_account" "prince_charming" {
-  account_id   = "prince-charming"
-  display_name = "Prince Charming"
-}
-
-resource "google_pubsub_topic" "verse_one" {
-  name = local.GCP_PUBSUB_VERSE_ONE
+resource "google_pubsub_topic" "verse_two" {
+  name = local.GCP_PUBSUB_VERSE_TWO
 
   labels = {
-    role = local.GCP_PUBSUB_VERSE_ONE
+    role = local.GCP_PUBSUB_VERSE_TWO
   }
 }
 
-resource "google_pubsub_subscription" "verse_one" {
-  name  = local.GCP_PUBSUB_VERSE_ONE
-  topic = google_pubsub_topic.verse_one.name
+resource "google_pubsub_subscription" "verse_two" {
+  name  = local.GCP_PUBSUB_VERSE_TWO
+  topic = google_pubsub_topic.verse_two.name
 
   labels = {
-    role = local.GCP_PUBSUB_VERSE_ONE
+    role = local.GCP_PUBSUB_VERSE_TWO
   }
 
   message_retention_duration = "604800s"
@@ -26,20 +21,20 @@ resource "google_pubsub_subscription" "verse_one" {
 
 }
 
-resource "google_pubsub_topic_iam_member" "verse_one" {
-  topic = google_pubsub_topic.verse_one.name
+resource "google_pubsub_topic_iam_member" "verse_two" {
+  topic = google_pubsub_topic.verse_two.name
   role = "roles/owner"
   member = "serviceAccount:${google_service_account.prince_charming.email}"
 }
 
-resource "google_pubsub_subscription_iam_member" "verse_one" {
-  subscription = google_pubsub_subscription.verse_one.name
+resource "google_pubsub_subscription_iam_member" "verse_two" {
+  subscription = google_pubsub_subscription.verse_two.name
   role         = "roles/owner"
   member       = "serviceAccount:${google_service_account.prince_charming.email}"
 }
 
-resource "google_cloudfunctions_function" "verse_one" {
-  name = "verse_one"
+resource "google_cloudfunctions_function" "verse_two" {
+  name = "verse_two"
   timeout = 500
   service_account_email = google_service_account.prince_charming.email
   ingress_settings = "ALLOW_ALL"
@@ -50,7 +45,7 @@ resource "google_cloudfunctions_function" "verse_one" {
   vpc_connector = google_vpc_access_connector.connector.id
   event_trigger {
     event_type = "google.pubsub.topic.publish"
-    resource = google_pubsub_topic.verse_one.name
+    resource = google_pubsub_topic.verse_two.name
     failure_policy {
       retry = false
     }
@@ -65,11 +60,7 @@ resource "google_cloudfunctions_function" "verse_one" {
   }
 
   source_repository  {
-    url = "https://source.developers.google.com/projects/${local.project_id}/repos/${google_sourcerepo_repository.default.name}/moveable-aliases/main/paths/cloud_functions/verse_one"
+    url = "https://source.developers.google.com/projects/${local.project_id}/repos/${google_sourcerepo_repository.default.name}/moveable-aliases/main/paths/cloud_functions/verse_two"
   }
 
-}
-
-resource "google_sourcerepo_repository" "default" {
-  name = local.project_id
 }
