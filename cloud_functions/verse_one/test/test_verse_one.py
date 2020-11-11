@@ -7,7 +7,10 @@ import main
 @fixture
 def event():
 
-    environ["COLLECTOR_ENDPOINT"] = "jaeger"
+    environ["COLLECTOR_ENDPOINT"] = "http://jaeger"
+    environ["CHORUS_FUNCTION"] = "chorus"
+    environ["LOCATION"] = "here"
+    environ["GCP_PROJECT_ID"] = "my_project"
 
     event = {
         '@type': 'type.googleapis.com/google.pubsub.v1.PubsubMessage',
@@ -24,8 +27,9 @@ def context():
     return context
 
 @patch('main.logger')
-def test_verse_one(mock_logger, event, context):
-
+def test_verse_one(mock_logger, requests_mock, event, context):
+    requests_mock.get('http://metadata/computeMetadata/v1/instance/service-accounts/default/identity?audience=https://here-my_project.cloudfunctions.net/chorus')
+    requests_mock.get('https://here-my_project.cloudfunctions.net/chorus')
     main.entry_point(event, context)
-
+    assert len(requests_mock.request_history) == 2
     assert mock_logger.mock_calls[-1][0] == 'info'
