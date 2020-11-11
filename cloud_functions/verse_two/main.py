@@ -3,6 +3,7 @@ import base64
 import sys
 import logging
 import json
+import time
 from os import environ
 from google.cloud import pubsub_v1
 import requests
@@ -35,9 +36,17 @@ def entry_point(event, context):
 
     with tracer.start_as_current_span(name="verse_two") as span:
 
-        lyric = "Don't you ever, don't you ever"
-        logger.info(lyric)
-        span.add_event(lyric)
+        lyrics = ["Don't you ever, don't you ever",
+                  "Lower yourself, forgetting all your standards",
+                  "Don't you ever, don't you ever",
+                  "Lower yourself, forgetting all your standards"]
+
+        for lyric in lyrics:
+            with tracer.start_as_current_span(name=lyric):
+
+                logger.info(lyric)
+                span.add_event(lyric)
+                time.sleep(1)
 
         with tracer.start_as_current_span(name="sing_chorus") as span:
 
