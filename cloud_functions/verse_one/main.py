@@ -35,3 +35,5 @@ def entry_point(event, context):
         function_headers = {'Authorization': f'bearer {auth_token}', 'content-type': 'application/json'}
 
         request = requests.get(chorus_endpoint, headers=function_headers)
+        if request.status_code != 200:
+            logger.error(f'{chorus_endpoint} returned:{request.status_code}')

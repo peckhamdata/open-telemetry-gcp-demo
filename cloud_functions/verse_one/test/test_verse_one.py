@@ -4,6 +4,9 @@ from mock import patch, MagicMock
 from pytest import fixture
 import main
 
+metadata_endpoint = 'http://metadata/computeMetadata/v1/instance/service-accounts/default/identity?audience=https://here-my_project.cloudfunctions.net/chorus'
+chorus_endpoint = 'https://here-my_project.cloudfunctions.net/chorus'
+
 @fixture
 def event():
 
@@ -28,8 +31,16 @@ def context():
 
 @patch('main.logger')
 def test_verse_one(mock_logger, requests_mock, event, context):
-    requests_mock.get('http://metadata/computeMetadata/v1/instance/service-accounts/default/identity?audience=https://here-my_project.cloudfunctions.net/chorus')
-    requests_mock.get('https://here-my_project.cloudfunctions.net/chorus')
+    requests_mock.get(metadata_endpoint)
+    requests_mock.get(chorus_endpoint)
     main.entry_point(event, context)
     assert len(requests_mock.request_history) == 2
     assert mock_logger.mock_calls[-1][0] == 'info'
+
+@patch('main.logger')
+def test_chorus_fail(mock_logger, requests_mock, event, context):
+    requests_mock.get(metadata_endpoint)
+    requests_mock.get(chorus_endpoint, status_code=500)
+    main.entry_point(event, context)
+    assert len(requests_mock.request_history) == 2
+    assert mock_logger.mock_calls[-1][0] == 'error'
