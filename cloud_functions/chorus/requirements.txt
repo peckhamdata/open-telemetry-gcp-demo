@@ -1,0 +1,3 @@
+flask
+pytest==6.1.2
+barium-meal
