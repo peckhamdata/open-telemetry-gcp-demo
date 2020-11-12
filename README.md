@@ -6,72 +6,42 @@ This is a demonstration of using [Open Telemetry](https://opentelemetry.io/)
 to instrument a [Google Cloud Functions](https://cloud.google.com/functions)
 app.
 
-# Why?
+# Why Prince Charming?
 
-One of the hardest things I find about starting on a new project, in a new domain
-and/or with a new technology is gaining situational awareness.
+Whilst I found it relatively straightforward to instrument individual
+services I could not figure out how 'out of the box' to propagate context
+from one service to another, be it by message queue or by HTTP requests.
 
-Figuring out what is going on and where I am in relation to it.
+So I thought I would have a go myself and put the results out there
+to get feedback / direction.
 
-Whenever I start on something I like to use John Boyd's OODA loop as a mantra
+I'm often reluctant to do this for fear of looking naive / an idiot.
+But as Adam Ant sung "Ridicule is nothing to be scared of" Better to
+be wrong and be corrected than to remain ignorant.
 
-Observe
-Orientate
-Decide../services/api/app/utils/frameio/aqc_comments.py
-Act
+So this demo app is a tribute to Adam Ant and a small scale deployment
+of OpenTelemetry for Python across four Google Cloud Functions:
 
-Dan North has a similar one I find useful
+![architecture](assets/arch.png)
 
-Visualise
-Stableise
-Optimise 
+Three Cloud Functions represent the verses of the song 'Prince Charming'.
+They send the lyrics out via Open Telemetry.
 
-I had a go at drawing some sequence diagrams but these got out of date
-whenever the architecture changed.
+Each verse calls the next one by sending a message, along with its trace
+context, via a [Pub/Sub](https://cloud.google.com/pubsub) queue.
 
-As the architecture was a set of loosely coupled Cloud Functions this
-happened a lot.
+Before it does this it calls a function which represents the song's chorus
+over http.
 
-# What?
+The results in [Jaeger](https://www.jaegertracing.io/) look like this:
 
-Get the system to describe itself. Show how it is composed and what it does
-rather than telling people what I think it does. 
+![Jaeger](assets/jaeger-charming.png)   
+ 
+The instrumentation is wrapped up in a Python module called 
+[barium-meal](https://github.com/peckhamdata/barium-meal).
+ 
+To start the `song` drop a message into the `verse-one` queue.
 
-# How?
-
-Correlation IDs
-
-This is an idea I was introduced to by Matthew Skelton and Rob Thatcher
-
-Which brings us to
-
-Jaeger and Open Telemetry
-
-This all got a bit meta as I discovered that Open Telemetry was very much
-an emerging technology.
-
-One of the problems with getting started with a new project and a
-new technology is your questions are inevitably naive.  This can end up 
-soliciting derision from the people you ask and in turn make
-you reluctant to ask questions.
-
-We often talk about 'Safe to Fail' envionments.
-Emily Webber takes this a step further and talks about them being 'Safe to Learn'
-
-# So why Prince Charming?
-
-As Adam Ant put it 'ridicule is nothing to be scared of' If people mock you
-for your lack of knowledge rather than help you learn that is not your loss.
-
-Don't let it stop you from learning.
-
-## Kismit.
-
-Lisa Crispin on the Open Telemetry Glitter
-When I searched for Emily Webber "Safe to Learn" I got a Lisa Crispin blog entry
-
-"You know that's not how you're supposed to do that"
-
-## Running the tests
-
-`pytest`
+If you want to deploy this to your own GCP environment you'll find the
+[Terraform](https://www.terraform.io/) scripts in the [infrastructure](./infrastructure)
+directory along with a [README](./infrastructure/README.md). 

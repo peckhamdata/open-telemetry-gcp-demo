@@ -86,6 +86,10 @@ And grant the Terraform Service Account user access to the bucket:
 gsutil iam ch serviceAccount:terraform@${PROJECT_ID}.iam.gserviceaccount.com:objectAdmin gs://${PROJECT_ID}-tfstate
 ```
 
+## Deployment
+
 Light the blue touch paper...
 
 `terraform init`
+
+`terraform apply`
