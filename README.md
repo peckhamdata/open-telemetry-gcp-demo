@@ -6,6 +6,9 @@ This is a demonstration of using [Open Telemetry](https://opentelemetry.io/)
 to instrument a [Google Cloud Functions](https://cloud.google.com/functions)
 app.
 
+[Five minute lightning talk](https://www.youtube.com/watch?v=MSKvdOGAEvU) 
+from ScaleSummit 2020 if you prefer video.
+
 # Why Prince Charming?
 
 Whilst I found it relatively straightforward to instrument individual
